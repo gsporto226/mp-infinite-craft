@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gsporto226/mp-infinite-craft/cmd/websocket-server/domain"
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/gorilla/websocket"
@@ -28,23 +29,23 @@ func buildHandler(server *MainServer, upgrader websocket.Upgrader) http.HandlerF
 	return func(w http.ResponseWriter, r *http.Request) {
 		c, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			log.Print("upgrade:", err)
+			log.Print("Failed to upgrade:", err)
 			return
 		}
-		defer c.Close()
-		for {
-			mt, message, err := c.ReadMessage()
-			if err != nil {
-				log.Println("read:", err)
-				break
-			}
-
-			err = c.WriteMessage(mt, message)
-			if err != nil {
-				log.Println("write:", err)
-				break
-			}
-		}
+		server.HandleNewConnection(c)
+		// for {
+		// 	mt, message, err := c.ReadMessage()
+		// 	if err != nil {
+		// 		log.Println("read:", err)
+		// 		break
+		// 	}
+		//
+		// 	err = c.WriteMessage(mt, message)
+		// 	if err != nil {
+		// 		log.Println("write:", err)
+		// 		break
+		// 	}
+		// }
 	}
 }
 
@@ -53,9 +54,13 @@ func buildMainServer() MainServer {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return MainServer{
-		database,
+	err = database.Ping()
+	if err != nil {
+		log.Fatal(err)
 	}
+	log.Print("Database connection established")
+	userCollection := domain.NewUserCollection(database)
+	return NewMainServer(database, &userCollection)
 }
 
 func main() {
@@ -66,6 +71,8 @@ func main() {
 		EnableCompression: true,
 	}
 	main_server := buildMainServer()
+	main_server.Initialize()
+	main_server.DoOnce()
 	defer main_server.Close()
 	websocket_handler := buildHandler(&main_server, upgrader)
 	http.HandleFunc("/open", websocket_handler)

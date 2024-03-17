@@ -1,5 +1,5 @@
 import { readable, writable } from "svelte/store"
-import { Nullable } from "../utils/types"
+import type { Nullable } from "../utils/types"
 
 export class OwnedSynchronizedStorage<T> {
     static private prefix = 'SynchronizedStorage_'

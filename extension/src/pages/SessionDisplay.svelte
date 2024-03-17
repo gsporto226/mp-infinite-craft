@@ -1,5 +1,9 @@
 <script lang="ts">
     import { active_server_session } from "../services/stores";
+
+    $: {
+        console.log($active_server_session);
+    }
 </script>
 
 <div class="session-display-container">

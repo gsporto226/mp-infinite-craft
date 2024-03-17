@@ -15,6 +15,7 @@
     $: {
         username_storage.set(nickname);
         server_address_storage.set(server_address);
+        user_token_storage.set(user_token);
         const status = $active_server_session?.status;
         disabled = status !== "disconnected";
         button_label = status === "disconnected" ? "Connect" : "Disconnect";
