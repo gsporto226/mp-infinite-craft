@@ -14,6 +14,10 @@ func NewWorld() World {
 	}
 }
 
+// on removing an entity from some table to put it into another, or just removing an entity:
+// entityId -> entityRecord -> EntityRecord -> archetype -> remove swap entity from archetype table
+// with last row, update last row's entity record to match its new id -> put removed entity into its new archetype
+
 func GetComponent[T any](world *World, entityId EntityID) (*T, bool) {
 	entityRecord, ok := world.entities[entityId]
 	if !ok {

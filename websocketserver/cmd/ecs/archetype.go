@@ -61,8 +61,13 @@ func (archetypes *Archetypes) GetOrCreateArchetype(componentIdSet *ComponentIdSe
 	return archetypes.createArchetype(componentIdSet)
 }
 
-func (archetypes *Archetypes) CreateEntity(entityId EntityID) EntityID {
-	archetypeId, archetype := archetypes.GetOrCreateArchetype(&emptyComponentIdSet)
+// func (archetypes *Archetypes) CreateEntity(entityId EntityID) EntityID {
+// 	archetypeId, archetype := archetypes.GetOrCreateArchetype(&emptyComponentIdSet)
+// }
+
+// Swaps last element
+func (archetype *Archetype) RemoveEntity(archetypeRecord *ArchetypeRecord) bool {
+
 }
 
 func NewArchetypes() Archetypes {
